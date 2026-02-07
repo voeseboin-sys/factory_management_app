@@ -1,0 +1,35 @@
+# Factory Manager Pro - Requirements
+# Kivy 2.3.0 + KivyMD 2.0.1 (Material Design 3)
+
+# Framework principal
+kivy==2.3.0
+https://github.com/kivymd/KivyMD/archive/master.zip
+
+# Dependencias críticas para KivyMD 2.0
+materialyoucolor>=0.1.5
+pillow>=10.0.0
+
+# Base de datos
+# sqlite3 está incluido en Python estándar
+
+# Generación de PDF
+fpdf2>=2.7.0
+
+# Compartir archivos (Android)
+plyer>=2.1.0
+
+# Utilidades
+requests>=2.31.0
+
+# Build tools (solo para desarrollo)
+buildozer>=1.5.0
+cython>=0.29.36,<3.0.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Linting
+flake8>=6.1.0
+pylint>=2.17.0
+black>=23.7.0

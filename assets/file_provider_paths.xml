@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FileProvider paths configuration for Factory Manager Pro
+    Required for sharing files on Android 7+ (API 24+)
+-->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Directorio de archivos internos de la app -->
+    <files-path name="internal_files" path="." />
+    
+    <!-- Directorio de caché de la app -->
+    <cache-path name="cache" path="." />
+    
+    <!-- Directorio de archivos externos de la app -->
+    <external-files-path name="external_files" path="." />
+    
+    <!-- Directorio de caché externo -->
+    <external-cache-path name="external_cache" path="." />
+    
+    <!-- Directorio de reportes específico -->
+    <external-files-path name="reports" path="reports/" />
+    
+    <!-- Directorio de base de datos -->
+    <files-path name="databases" path="databases/" />
+    
+</paths>

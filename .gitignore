@@ -1,0 +1,107 @@
+# Factory Manager Pro - .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+.env
+
+# Kivy/KivyMD
+*.kvc
+.kivy/
+
+# Buildozer
+.buildozer/
+bin/
+*.apk
+*.aab
+*.ipa
+
+# Android
+*.keystore
+*.jks
+android.keystore
+signing.properties
+
+# iOS
+ios/
+*.xcworkspace
+*.xcodeproj/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Base de datos local
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Reportes generados
+reports/*.pdf
+!reports/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Caché
+.cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Archivos de prueba
+test_*.pdf
+backup_*.db
+
+# Archivos temporales
+tmp/
+temp/
+*.tmp
+
+# Archivos de sistema
+Thumbs.db
+.DS_Store
+
+# Archivos de configuración local
+local_config.py
+config_local.py
+
+# Archivos de secrets
+secrets/
+*.secret
+*.key

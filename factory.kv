@@ -1,0 +1,97 @@
+# Factory Management App - KivyMD 2.0.1 Theme Definitions
+# Material Design 3 Styles
+
+#:import dp kivy.metrics.dp
+#:import sp kivy.metrics.sp
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+# Theme Colors - Material Design 3
+# Primary: Indigo
+# Secondary: Amber
+# Tertiary: Teal
+# Error: Red
+
+<MDTextField>:
+    font_size: sp(16)
+    radius: [dp(8),]
+
+<MDButton>:
+    font_size: sp(14)
+    radius: [dp(20),] if self.style != 'text' else [dp(8),]
+    elevation: 2 if self.style == 'elevated' else 0
+
+<MDCard>:
+    radius: [dp(12),]
+    elevation: 1
+    shadow_color: app.theme_cls.shadowColor
+
+<MDListItem>:
+    radius: [dp(8),]
+    ripple_effect: True
+
+<MDSnackbar>:
+    radius: [dp(8),]
+    elevation: 3
+
+# Custom styles para la app
+<FactoryTextField@MDTextField>:
+    mode: "outlined"
+    size_hint_x: 1
+    font_size: sp(16)
+    radius: [dp(8),]
+
+<FactoryButton@MDButton>:
+    style: "filled"
+    height: dp(48)
+    radius: [dp(20),]
+
+<FactoryOutlinedButton@MDButton>:
+    style: "outlined"
+    height: dp(48)
+    radius: [dp(20),]
+
+<FactoryCard@MDCard>:
+    style: "elevated"
+    radius: [dp(12),]
+    padding: dp(16)
+    spacing: dp(12)
+    elevation: 2
+
+<StatCard@MDCard>:
+    style: "filled"
+    radius: [dp(12),]
+    padding: dp(16)
+    size_hint_y: None
+    height: dp(120)
+
+<NavItem@MDListItem>:
+    radius: [dp(8),]
+    ripple_effect: True
+
+<SectionTitle@MDLabel>:
+    font_style: "Title"
+    theme_text_color: "Primary"
+    size_hint_y: None
+    height: dp(40)
+
+<DataTableHeader@MDBoxLayout>:
+    size_hint_y: None
+    height: dp(48)
+    md_bg_color: app.theme_cls.primaryColor + "20"
+    padding: [dp(16), dp(8)]
+
+<DataTableRow@MDBoxLayout>:
+    size_hint_y: None
+    height: dp(56)
+    padding: [dp(16), dp(8)]
+
+# Screen transitions
+<ScreenManager>:
+    transition: SlideTransition(duration=0.3)
+
+# Scroll behavior
+<MDScrollView>:
+    bar_width: dp(6)
+    scroll_type: ['bars', 'content']
+    bar_color: app.theme_cls.primaryColor
+    bar_inactive_color: app.theme_cls.primaryColor + "40"

@@ -1,0 +1,365 @@
+# GitHub Actions Workflow para compilar Factory Manager Pro
+# Compila la aplicación KivyMD 2.0.1 para Android usando Buildozer
+
+name: Build Android APK/AAB
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Tipo de build'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+env:
+  APP_NAME: Factory Manager Pro
+  PYTHON_VERSION: '3.10'
+  JAVA_VERSION: '17'
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # ============================================
+    # CHECKOUT DEL CÓDIGO
+    # ============================================
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # ============================================
+    # CONFIGURAR PYTHON
+    # ============================================
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    # ============================================
+    # CONFIGURAR JAVA (requerido para Android)
+    # ============================================
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+
+    # ============================================
+    # CACHE DE DEPENDENCIAS
+    # ============================================
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Cache buildozer dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.buildozer
+          .buildozer
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
+
+    # ============================================
+    # INSTALAR DEPENDENCIAS DEL SISTEMA
+    # ============================================
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          python3-pip \
+          build-essential \
+          git \
+          ffmpeg \
+          libsdl2-dev \
+          libsdl2-image-dev \
+          libsdl2-mixer-dev \
+          libsdl2-ttf-dev \
+          libportmidi-dev \
+          libswscale-dev \
+          libavformat-dev \
+          libavcodec-dev \
+          zlib1g-dev \
+          libgstreamer1.0 \
+          gstreamer1.0-plugins-base \
+          gstreamer1.0-plugins-good \
+          libsqlite3-dev \
+          libffi-dev \
+          libssl-dev \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          zip \
+          unzip
+
+    # ============================================
+    # INSTALAR DEPENDENCIAS DE PYTHON
+    # ============================================
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade setuptools wheel
+        pip install buildozer cython==0.29.36
+        pip install kivy==2.3.0
+        pip install https://github.com/kivymd/KivyMD/archive/master.zip
+        pip install pillow fpdf2 plyer requests materialyoucolor
+
+    # ============================================
+    # VERIFICAR ESTRUCTURA DEL PROYECTO
+    # ============================================
+    - name: Verify project structure
+      run: |
+        echo "=== Estructura del proyecto ==="
+        ls -la
+        echo ""
+        echo "=== Contenido de modules/ ==="
+        ls -la modules/ || echo "Directorio modules no encontrado"
+        echo ""
+        echo "=== Verificando main.py ==="
+        head -50 main.py
+
+    # ============================================
+    # CONFIGURAR ANDROID SDK/NDK
+    # ============================================
+    - name: Setup Android SDK
+      run: |
+        # Descargar command line tools
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        cd $HOME/android-sdk/cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+        unzip -q commandlinetools-linux-9477386_latest.zip
+        mv cmdline-tools latest
+        rm commandlinetools-linux-9477386_latest.zip
+        
+        # Configurar variables de entorno
+        echo "ANDROID_SDK=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+        echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+
+    - name: Accept Android licenses
+      run: |
+        yes | sdkmanager --licenses || true
+
+    # ============================================
+    # BUILD CON BUILDOZER
+    # ============================================
+    - name: Build Android APK (Debug)
+      if: github.event.inputs.build_type != 'release' && !startsWith(github.ref, 'refs/tags/v')
+      run: |
+        buildozer android debug
+      env:
+        BUILDOZER_WARN_ON_ROOT: 0
+      timeout-minutes: 120
+
+    - name: Build Android AAB (Release)
+      if: github.event.inputs.build_type == 'release' || startsWith(github.ref, 'refs/tags/v')
+      run: |
+        buildozer android release
+      env:
+        BUILDOZER_WARN_ON_ROOT: 0
+      timeout-minutes: 120
+
+    # ============================================
+    # VERIFICAR ARTEFACTOS GENERADOS
+    # ============================================
+    - name: List build artifacts
+      run: |
+        echo "=== Contenido del directorio bin/ ==="
+        ls -la bin/ || echo "Directorio bin no encontrado"
+        echo ""
+        echo "=== Buscando archivos .apk y .aab ==="
+        find . -name "*.apk" -o -name "*.aab" 2>/dev/null | head -20
+
+    # ============================================
+    # SUBIR ARTEFACTOS (DEBUG)
+    # ============================================
+    - name: Upload Debug APK
+      if: github.event.inputs.build_type != 'release' && !startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-artifact@v4
+      with:
+        name: factory-manager-debug-apk
+        path: |
+          bin/*.apk
+        retention-days: 30
+        if-no-files-found: warn
+
+    # ============================================
+    # SUBIR ARTEFACTOS (RELEASE)
+    # ============================================
+    - name: Upload Release AAB
+      if: github.event.inputs.build_type == 'release' || startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-artifact@v4
+      with:
+        name: factory-manager-release-aab
+        path: |
+          bin/*.aab
+        retention-days: 90
+        if-no-files-found: warn
+
+    # ============================================
+    # CREAR RELEASE DE GITHUB
+    # ============================================
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          bin/*.aab
+          bin/*.apk
+        generate_release_notes: true
+        draft: false
+        prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ============================================
+  # JOB DE ANÁLISIS DE CÓDIGO
+  # ============================================
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install linting tools
+      run: |
+        pip install flake8 pylint black
+
+    - name: Run flake8
+      run: |
+        flake8 main.py modules/ --count --select=E9,F63,F7,F82 --show-source --statistics || true
+
+    - name: Check code formatting with black
+      run: |
+        black --check main.py modules/ || true
+
+  # ============================================
+  # JOB DE PRUEBAS
+  # ============================================
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install pytest pytest-cov
+        pip install kivy==2.3.0
+        pip install https://github.com/kivymd/KivyMD/archive/master.zip
+        pip install pillow fpdf2 plyer requests materialyoucolor
+
+    - name: Run tests
+      run: |
+        # Crear tests básicos si no existen
+        mkdir -p tests
+        
+        # Test de importación de módulos
+        python -c "
+import sys
+sys.path.insert(0, '.')
+from modules.database import DatabaseManager
+from modules.pdf_generator import PDFGenerator
+print('✓ Módulos importados correctamente')
+"
+        
+        # Test de base de datos
+        python -c "
+import sys
+import os
+sys.path.insert(0, '.')
+os.environ['KIVY_ORIENTATION'] = 'landscape'
+from modules.database import DatabaseManager
+db = DatabaseManager()
+db.init_database()
+print('✓ Base de datos inicializada correctamente')
+print(f'✓ Ruta de BD: {db.db_path}')
+stats = db.get_production_stats()
+print(f'✓ Estadísticas: {stats}')
+db.close()
+"
+        
+        # Test de generación de PDF
+        python -c "
+import sys
+import os
+sys.path.insert(0, '.')
+from modules.pdf_generator import PDFGenerator
+pdf = PDFGenerator()
+data = {
+    'title': 'Test Report',
+    'date': '2024-01-15',
+    'productions': [
+        (1, 'Line A - Product X', 100, '08:00', 'Completed'),
+        (2, 'Line B - Product Y', 200, '09:00', 'In Progress'),
+    ],
+    'stats': {
+        'total': 300,
+        'efficiency': '95%',
+        'orders': 5,
+        'defects': '1%'
+    }
+}
+filepath = pdf.generate_production_report(data)
+print(f'✓ PDF generado: {filepath}')
+print(f'✓ Tamaño: {os.path.getsize(filepath)} bytes')
+"
+      env:
+        KIVY_ORIENTATION: landscape
+        KIVY_GL_BACKEND: sdl2
+        DISPLAY: :99
+
+  # ============================================
+  # NOTIFICACIÓN DE RESULTADO
+  # ============================================
+  notify:
+    needs: [build-android, code-quality, test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Check build status
+      run: |
+        echo "Build Android: ${{ needs.build-android.result }}"
+        echo "Code Quality: ${{ needs.code-quality.result }}"
+        echo "Tests: ${{ needs.test.result }}"
+        
+        if [ "${{ needs.build-android.result }}" == "success" ] && \
+           [ "${{ needs.code-quality.result }}" == "success" ] && \
+           [ "${{ needs.test.result }}" == "success" ]; then
+          echo "✅ TODOS LOS CHECKS PASARON"
+        else
+          echo "❌ ALGUNOS CHECKS FALLARON"
+          exit 1
+        fi
