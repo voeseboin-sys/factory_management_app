@@ -105,14 +105,14 @@ android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, M
 
 # (int) Target Android API, should be as high as possible.
 # Android 13 = API 33
-android.api = 33
+android.api = 34
 android.private_storage = True
 android.skip_update = False
 android.accept_sdk_license = True
 
 # (int) Minimum API your APK / AAB will support.
 # Android 8.0 = API 26
-android.minapi = 26
+android.minapi = 24
 
 # (int) Android SDK version to use
 #android.sdk = 33
