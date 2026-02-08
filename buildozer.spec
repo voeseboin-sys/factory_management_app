@@ -121,7 +121,7 @@ android.ndk = 25b
 #android.ndk_api = 26
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-android.private_storage = True
+android.private_storage = 1
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =
@@ -135,13 +135,13 @@ android.private_storage = True
 # (bool) If True, then skip trying to update the Android sdk
 # This can be useful to avoid excess Internet downloads or save time
 # when an update is due and you just want to test/build your package
- android.skip_update = False
+ android.skip_update = true
 
 # (bool) If True, then automatically accept SDK license
 # agreements. This is intended for automation only. If set to False,
 # the default, you will be shown the license when first running
 # buildozer.
-android.accept_sdk_license = True
+android.accept_sdk_license = true
 
 # (str) Android entry point, default is ok for Kivy-based app
 #android.entrypoint = org.kivy.android.PythonActivity
