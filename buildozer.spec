@@ -31,7 +31,7 @@ source.exclude_dirs = tests, bin, venv, .venv, __pycache__, .git, .github, .idea
 version = 2.0.1
 
 # (str) Application versioning (method 2)
-# version.regex = __version__ = ['"](.*)['"]
+# version.regex = __version__ = [](.*)[]
 # version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
@@ -90,7 +90,7 @@ android.presplash_color = #FFFFFF
 # see https://lottiefiles.com/ for examples and https://airbnb.io/lottie/
 # for general documentation.
 # Lottie files can be created using various tools, like Adobe After Effect or Synfig.
-#android.presplash_lottie = "path/to/lottie/file.json"
+#android.presplash_lottie = path/to/lottie/file.json
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
 #icon.adaptive_foreground.filename = %(source.dir)s/assets/icon_foreground.png
@@ -121,7 +121,7 @@ android.ndk = 25b
 #android.ndk_api = 26
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-android.private_storage = True
+android.private_storage = 1
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =
@@ -135,13 +135,13 @@ android.private_storage = True
 # (bool) If True, then skip trying to update the Android sdk
 # This can be useful to avoid excess Internet downloads or save time
 # when an update is due and you just want to test/build your package
- android.skip_update = False
+ android.skip_update = 0
 
 # (bool) If True, then automatically accept SDK license
 # agreements. This is intended for automation only. If set to False,
 # the default, you will be shown the license when first running
 # buildozer.
-android.accept_sdk_license = True
+android.accept_sdk_license = 1
 
 # (str) Android entry point, default is ok for Kivy-based app
 #android.entrypoint = org.kivy.android.PythonActivity
@@ -165,7 +165,7 @@ android.accept_sdk_license = True
 #android.package_name = com.factorymanager.app
 
 # (str) Android app theme, default is ok for Kivy-based app
-# android.apptheme = "@android:style/Theme.NoTitleBar"
+# android.apptheme = @android:style/Theme.NoTitleBar
 
 # (list) Pattern to whitelist for the whole project
 #android.whitelist =
@@ -177,7 +177,7 @@ android.accept_sdk_license = True
 #android.blacklist_src =
 
 # (list) List of Java .jar files to add to the libs so that pyjnius can access
-# their classes. Don't add jars that you do not need, since extra jars can slow
+# their classes. Dont add jars that you do not need, since extra jars can slow
 # down the build process. Allows wildcards matching, for example:
 # OUYA-ODK/libs/*.jar
 #android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
@@ -189,7 +189,7 @@ android.accept_sdk_license = True
 #android.add_aars =
 
 # (list) Put these files or directories in the apk assets directory.
-# Either form may be used, and assets need not be in 'source.include_exts'.
+# Either form may be used, and assets need not be in source.include_exts.
 # 1) android.add_assets = source/asset_relative/only_in_apk
 # 2) android.add_assets = source/asset_relative/only_in_apk:destination/asset_in_apk
 android.add_assets = assets/
@@ -198,25 +198,25 @@ android.add_assets = assets/
 #android.gradle_dependencies = com.android.support:support-compat:28.0.0
 android.gradle_dependencies = androidx.core:core:1.10.1, androidx.appcompat:appcompat:1.6.1
 
-# (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
+# (bool) Enable AndroidX support. Enable when android.gradle_dependencies
 # contains an androidx package or when adding aar files from an AndroidX enabled project.
 android.enable_androidx = True
 
 # (list) add java compile options
-# this can for example be necessary when importing certain java libraries using the 'android.gradle_dependencies' option
+# this can for example be necessary when importing certain java libraries using the android.gradle_dependencies option
 # see https://developer.android.com/studio/write/java8-support for further information
-# android.add_compile_options = "sourceCompatibility = 1.8", "targetCompatibility = 1.8"
+# android.add_compile_options = sourceCompatibility = 1.8, targetCompatibility = 1.8
 
 # (list) Gradle repositories to add {can be necessary for some android.gradle_dependencies}
 # please enclose in double quotes
-# e.g. android.gradle_repositories = "maven { url 'https://kotlin.bintray.com/ktor' }"
+# e.g. android.gradle_repositories = maven { url https://kotlin.bintray.com/ktor }
 #android.add_gradle_repositories =
 
 # (list) packaging options to add
 # see https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.PackagingOptions.html
 # can be necessary to solve conflicts in gradle_dependencies
 # please enclose in double quotes
-# e.g. android.add_packaging_options = "exclude 'META-INF/common.kotlin_module'", "exclude 'META-INF/*.kotlin_module'"
+# e.g. android.add_packaging_options = exclude META-INF/common.kotlin_module, exclude META-INF/*.kotlin_module
 #android.add_packaging_options =
 
 # (list) Java classes to add as activities to the manifest.
@@ -258,7 +258,7 @@ android.wakelock = True
 # (str) Android logcat filters to use
 #android.logcat_filters = *:S python:D
 
-# (bool) Android logcat only display log for activity's pid instead of full log
+# (bool) Android logcat only display log for activitys pid instead of full log
 #android.logcat_pid_only = True
 
 # (str) Android additional build commands
@@ -286,11 +286,11 @@ android.fileprovider_authority = com.factorymanager.app.fileprovider
 #android.entrypoint = org.kivy.android.PythonActivity
 
 # (list) Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
-# In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
+# In past, was `android.arch` as we werent supporting builds for multiple archs at the same time.
 android.archs = arm64-v8a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
-# this is not the same as app version and should only be edited if you know what you're doing
+# this is not the same as app version and should only be edited if you know what youre doing
 # android.numeric_version = 1
 
 # (bool) enables Android auto backup feature (Android API >=23)
@@ -302,7 +302,7 @@ android.allow_backup = True
 # (str) If you need to insert variables into your AndroidManifest.xml file,
 # you can do so with the manifestPlaceholders property.
 # This property takes a map of key-value pairs. (via a string)
-# Usage example : android.manifest_placeholders = [myCustomUrl:\"org.kivy.customurl\"]
+# Usage example : android.manifest_placeholders = [myCustomUrl:\org.kivy.customurl\]
 # android.manifest_placeholders = [:]
 
 # (bool) disables the compilation of py to pyc/pyo files when packaging
@@ -374,7 +374,7 @@ ios.codesign.allowed = false
 
 # (str) Name of the certificate to use for signing the debug version
 # Get a list of available identities: buildozer ios list_identities
-#ios.codesign.debug = "iPhone Developer: <lastname> <firstname> (<hexstring>)"
+#ios.codesign.debug = iPhone Developer: <lastname> <firstname> (<hexstring>)
 
 # (str) The development team to use for signing the debug version
 #ios.codesign.development_team.debug = <hexstring>
@@ -415,9 +415,9 @@ warn_on_root = 1
 #    -----------------------------------------------------------------------------
 #    List as sections
 #
-#    You can define all the "list" as [section:key].
+#    You can define all the list as [section:key].
 #    Each line will be considered as a option to the list.
-#    Let's take [app] / source.exclude_patterns.
+#    Lets take [app] / source.exclude_patterns.
 #    Instead of doing:
 #
 # [app]
@@ -436,7 +436,7 @@ warn_on_root = 1
 #
 #    You can extend section / key with a profile
 #    For example, you want to deploy a demo version of your application without
-#    HD content. You could first change the title to add "(demo)" in the name
+#    HD content. You could first change the title to add (demo) in the name
 #    and extend the excluded directories to remove the HD content.
 #
 # [app@demo]
@@ -445,6 +445,6 @@ warn_on_root = 1
 # [app:source.exclude_patterns@demo]
 # images/hd/*
 #
-#    Then, invoke the command line with the "demo" profile:
+#    Then, invoke the command line with the demo profile:
 #
 # buildozer --profile demo android debug
