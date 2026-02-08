@@ -106,6 +106,9 @@ android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, M
 # (int) Target Android API, should be as high as possible.
 # Android 13 = API 33
 android.api = 33
+android.private_storage = True
+android.skip_update = False
+android.accept_sdk_license = True
 
 # (int) Minimum API your APK / AAB will support.
 # Android 8.0 = API 26
@@ -121,7 +124,6 @@ android.ndk = 25b
 #android.ndk_api = 26
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-android.private_storage = 1
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =
@@ -135,13 +137,11 @@ android.private_storage = 1
 # (bool) If True, then skip trying to update the Android sdk
 # This can be useful to avoid excess Internet downloads or save time
 # when an update is due and you just want to test/build your package
- android.skip_update = 0
 
 # (bool) If True, then automatically accept SDK license
 # agreements. This is intended for automation only. If set to False,
 # the default, you will be shown the license when first running
 # buildozer.
-android.accept_sdk_license = 0
 
 # (str) Android entry point, default is ok for Kivy-based app
 #android.entrypoint = org.kivy.android.PythonActivity
